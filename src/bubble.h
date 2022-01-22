@@ -7,6 +7,7 @@ const int BUBBLE_DEFAULT_RADIUS = 10;
 const int BUBBLE_RADIUS_THRESHOLD = 10;
 const int BUBBLE_DEFAULT_VX = 100;
 const int BUBBLE_DEFAULT_VY = 0;
+const int PLAY_Y_HEIGHT = 450;//copy from main
 
 class Bubble
 {
@@ -31,21 +32,29 @@ public:
     void nextStep(double t)
     {
         // move the bubble
-        double new_x = circle.getX() + vx*t;
-        double new_y = circle.getY() + vy*t;
+        double new_x = circle.getX() + vx*t;  //next x coordinate
+        double new_y = circle.getY() + vy*t;  //next y coordinate
 
         if ((vx < 0 && new_x < (0 + circle.getRadius())) // bounce along X direction at left border
             ||
             (vx > 0 && new_x > (WINDOW_X - circle.getRadius()))) // bounce along X direction at right border
         {
-            
+
             vx = -vx;
             new_x = circle.getX() + vx*t;
-            
+
+        }
+        if ( ((vy<0) && new_y < (BUBBLE_START_Y+circle.getRadius())) // bounce along Y direction at upper border
+             ||
+            (vy>0 && new_y >(PLAY_Y_HEIGHT -circle.getRadius())))
+        {
+            vy=-vy;
+            new_y=circle.getY() +vy*t;
         }
 
         circle.moveTo(new_x, new_y);
     }
+
 
     double get_radius()
     {

@@ -1,4 +1,5 @@
 #include <simplecpp>
+
 #include "shooter.h"
 #include "bubble.h"
 
@@ -6,7 +7,7 @@
 const double STEP_TIME = 0.02;
 
 /* Game Vars */
-const int PLAY_Y_HEIGHT = 450;
+//const int PLAY_Y_HEIGHT = 450; //remove here
 const int LEFT_MARGIN = 70;
 const int TOP_MARGIN = 20;
 const int BOTTOM_MARGIN = (PLAY_Y_HEIGHT+TOP_MARGIN);
@@ -33,8 +34,8 @@ vector<Bubble> create_bubbles()
 {
     // create initial bubbles in the game
     vector<Bubble> bubbles;
-    bubbles.push_back(Bubble(WINDOW_X/2.0, BUBBLE_START_Y, BUBBLE_DEFAULT_RADIUS, -BUBBLE_DEFAULT_VX, 0, COLOR(255,105,180)));
-    bubbles.push_back(Bubble(WINDOW_X/4.0, BUBBLE_START_Y, BUBBLE_DEFAULT_RADIUS, BUBBLE_DEFAULT_VX, 0, COLOR(255,105,180)));
+    bubbles.push_back(Bubble(WINDOW_X/2.0, BUBBLE_START_Y, BUBBLE_DEFAULT_RADIUS, -BUBBLE_DEFAULT_VX, 50, COLOR(255,105,180)));
+    bubbles.push_back(Bubble(WINDOW_X/4.0, BUBBLE_START_Y, BUBBLE_DEFAULT_RADIUS, BUBBLE_DEFAULT_VX, 50, COLOR(255,105,180)));
     return bubbles;
 }
 
@@ -45,7 +46,7 @@ int main()
 
     Line b1(0, PLAY_Y_HEIGHT, WINDOW_X, PLAY_Y_HEIGHT);
     b1.setColor(COLOR(0, 0, 255));
-    
+
     string msg_cmd("Cmd: _");
     Text charPressed(LEFT_MARGIN, BOTTOM_MARGIN, msg_cmd);
 
@@ -65,12 +66,12 @@ int main()
     {
         bool pendingEvent = checkEvent(event);
         if (pendingEvent)
-        {   
+        {
             // Get the key pressed
             char c = charFromEvent(event);
             msg_cmd[msg_cmd.length() - 1] = c;
             charPressed.setMessage(msg_cmd);
-            
+
             // Update the shooter
             if(c == 'a')
                 shooter.move(STEP_TIME, true);
@@ -81,7 +82,7 @@ int main()
             else if(c == 'q')
                 return 0;
         }
-        
+
         // Update the bubbles
         move_bubbles(bubbles);
 
