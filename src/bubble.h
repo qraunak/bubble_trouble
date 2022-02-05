@@ -28,6 +28,11 @@ public:
         vx = vx_;
         vy = vy_;
     }
+    void get_coordinate_bubble(int &x, int &y)
+    {
+        x = circle.getX();
+        y = circle.getY();
+    }
 
     void nextStep(double t)
     {

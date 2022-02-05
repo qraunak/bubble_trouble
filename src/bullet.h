@@ -14,6 +14,11 @@ public:
         rect.setFill(true);
         vy = vy_;
     }
+    void get_coordinate_bullet(int &x,int &y)
+    {
+      x = rect.getX();
+      y = rect.getY();
+    }
 
     bool nextStep(double t)
     {

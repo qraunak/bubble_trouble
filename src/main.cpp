@@ -12,6 +12,32 @@ const int LEFT_MARGIN = 70;
 const int TOP_MARGIN = 20;
 const int BOTTOM_MARGIN = (PLAY_Y_HEIGHT+TOP_MARGIN);
 
+int abs(int a)
+{
+    return a>=0 ? a : -a;
+}
+
+void collision_bullet_bubble(vector<Bubble> &bubbles ,vector<Bullet> &bullets)
+{
+    int x_bullet ,y_bullet;
+    int x_bubbles,y_bubbles;
+    for(unsigned int i=0; i<bullets.size(); i++)
+    {
+        bullets[i].get_coordinate_bullet(x_bullet,y_bullet);
+        for(unsigned int j=0; j<bubbles.size(); j++)
+        {
+            bubbles[j].get_coordinate_bubble(x_bubbles,y_bubbles);
+            bool x_near = abs(x_bubbles-x_bullet) <= BUBBLE_DEFAULT_RADIUS;
+            bool y_near = abs(y_bubbles-y_bullet) <= BUBBLE_DEFAULT_RADIUS;
+            if ( x_near && y_near)
+            {
+                bullets.erase(bullets.begin()+i);
+                bubbles.erase(bubbles.begin()+j);
+            }
+        }
+    }
+
+}
 
 void move_bullets(vector<Bullet> &bullets){
     // move all bullets
@@ -88,6 +114,7 @@ int main()
 
         // Update the bullets
         move_bullets(bullets);
+        collision_bullet_bubble(bubbles , bullets);
 
         wait(STEP_TIME);
     }
