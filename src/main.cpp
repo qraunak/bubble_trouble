@@ -25,6 +25,28 @@ void print_congratulation()
     wait(2);
 }
 
+bool collision_bubble_shooter(vector<Bubble> &bubbles , Shooter &shooter)
+{
+    int x_shooter = shooter.get_head_center_x();
+    int y_shooter = shooter.get_head_center_y();
+    int x_bubbles,y_bubbles;
+    for(unsigned int j=0; j<bubbles.size(); j++)
+    {
+        bubbles[j].get_coordinate_bubble(x_bubbles,y_bubbles);
+        bool y_near = y_bubbles >= y_shooter;
+        bool x_near = abs(x_shooter - x_bubbles) < 2*BUBBLE_DEFAULT_RADIUS;
+        if(x_near && y_near)
+        {
+            string game_over("Game Over");
+            Text charPress(3.5*LEFT_MARGIN, 0.5*BOTTOM_MARGIN, game_over);
+            charPress.setMessage(game_over);
+            wait(5);
+            return true;
+        }
+    }
+    return false;
+}
+
 void collision_bullet_bubble(vector<Bubble> &bubbles ,vector<Bullet> &bullets)
 {
     int x_bullet ,y_bullet;
@@ -132,6 +154,9 @@ int main()
             print_congratulation();
             break;
         }
+        bool is_over = collision_bubble_shooter(bubbles ,shooter);
+        if (is_over)
+            break;
 
         wait(STEP_TIME);
     }
