@@ -17,6 +17,14 @@ int abs(int a)
     return a>=0 ? a : -a;
 }
 
+void print_congratulation()
+{
+    string congratulation("Congratulations !!");
+    Text charPress(3.5*LEFT_MARGIN, 0.5*BOTTOM_MARGIN, congratulation);
+    charPress.setMessage(congratulation);
+    wait(2);
+}
+
 void collision_bullet_bubble(vector<Bubble> &bubbles ,vector<Bullet> &bullets)
 {
     int x_bullet ,y_bullet;
@@ -36,7 +44,6 @@ void collision_bullet_bubble(vector<Bubble> &bubbles ,vector<Bullet> &bullets)
             }
         }
     }
-
 }
 
 void move_bullets(vector<Bullet> &bullets){
@@ -114,7 +121,17 @@ int main()
 
         // Update the bullets
         move_bullets(bullets);
+
+        // Check for collisiona and delete if collided
         collision_bullet_bubble(bubbles , bullets);
+
+        //Game over message
+        if (bubbles.size() == 0)
+        {
+            bullets.clear();
+            print_congratulation();
+            break;
+        }
 
         wait(STEP_TIME);
     }
