@@ -26,7 +26,7 @@ public:
         circle.setFill(true);
 
         vx = vx_;
-        vy = vy_;
+        vy = 1.0; //vy_;
     }
     void get_coordinate_bubble(int &x, int &y)
     {
@@ -38,9 +38,7 @@ public:
     {
         // move the bubble
         double new_x = circle.getX() + vx*t;  //next x coordinate
-        double new_y = circle.getY() + vy*t;  //next y coordinate
-        cout<<new_x<<" "<<new_y<<endl;
-            //(1.0/100000)*new_x*new_x; //
+        double new_y = circle.getY() + (1.0/200)*vx*vx*vy*t;  //next y coordinate
         if ((vx < 0 && new_x < (0 + circle.getRadius())) // bounce along X direction at left border
             ||
             (vx > 0 && new_x > (WINDOW_X - circle.getRadius()))) // bounce along X direction at right border
@@ -55,7 +53,7 @@ public:
             (vy>0 && new_y >(PLAY_Y_HEIGHT -circle.getRadius())))
         {
             vy=-vy;
-            new_y=circle.getY() +vy*t;
+            new_y=circle.getY() + (1.0/200)*vx*vx*vy*t;
         }
 
         circle.moveTo(new_x, new_y);

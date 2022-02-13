@@ -140,9 +140,6 @@ int main()
 
     int score_value=0;
 
-
-
-
     // Main game loop
     while (true)
     {
@@ -225,6 +222,5 @@ int main()
         }
 
         wait(STEP_TIME);
-
     }
 }
