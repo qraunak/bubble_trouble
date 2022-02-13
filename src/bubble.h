@@ -39,7 +39,8 @@ public:
         // move the bubble
         double new_x = circle.getX() + vx*t;  //next x coordinate
         double new_y = circle.getY() + vy*t;  //next y coordinate
-
+        cout<<new_x<<" "<<new_y<<endl;
+            //(1.0/100000)*new_x*new_x; //
         if ((vx < 0 && new_x < (0 + circle.getRadius())) // bounce along X direction at left border
             ||
             (vx > 0 && new_x > (WINDOW_X - circle.getRadius()))) // bounce along X direction at right border

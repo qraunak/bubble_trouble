@@ -17,11 +17,16 @@ int abs(int a)
     return a>=0 ? a : -a;
 }
 
-void print_congratulation()
+void print_banner(int type_over)
 {
-    string congratulation("Congratulations !!");
-    Text charPress(3.5*LEFT_MARGIN, 0.5*BOTTOM_MARGIN, congratulation);
-    charPress.setMessage(congratulation);
+    string print_data = "";
+    if (type_over == 1)
+        print_data = "Congratulations !!";
+    else if (type_over == 2)
+        print_data = "Game Over !!";
+
+    Text charPress(3.5*LEFT_MARGIN, 0.5*BOTTOM_MARGIN, print_data);
+    //charPress.setMessage(print_data);
     wait(2);
 }
 
@@ -37,18 +42,15 @@ bool collision_bubble_shooter(vector<Bubble> &bubbles , Shooter &shooter)
         bool x_near = abs(x_shooter - x_bubbles) < 2*BUBBLE_DEFAULT_RADIUS;
         if(x_near && y_near)
         {
-            string game_over("Game Over");
-            Text charPress(3.5*LEFT_MARGIN, 0.5*BOTTOM_MARGIN, game_over);
-            charPress.setMessage(game_over);
-            wait(5);
             return true;
         }
     }
     return false;
 }
 
-void collision_bullet_bubble(vector<Bubble> &bubbles ,vector<Bullet> &bullets)
+int collision_bullet_bubble(vector<Bubble> &bubbles ,vector<Bullet> &bullets)
 {
+    int counter_score=0;
     int x_bullet ,y_bullet;
     int x_bubbles,y_bubbles;
     for(unsigned int i=0; i<bullets.size(); i++)
@@ -63,9 +65,11 @@ void collision_bullet_bubble(vector<Bubble> &bubbles ,vector<Bullet> &bullets)
             {
                 bullets.erase(bullets.begin()+i);
                 bubbles.erase(bubbles.begin()+j);
+                counter_score++;
             }
         }
     }
+    return counter_score;
 }
 
 void move_bullets(vector<Bullet> &bullets){
@@ -102,9 +106,6 @@ int main()
     Line b1(0, PLAY_Y_HEIGHT, WINDOW_X, PLAY_Y_HEIGHT);
     b1.setColor(COLOR(0, 0, 255));
 
-    string msg_cmd("Cmd: _");
-    Text charPressed(LEFT_MARGIN, BOTTOM_MARGIN, msg_cmd);
-
     // Intialize the shooter
     Shooter shooter(SHOOTER_START_X, SHOOTER_START_Y, SHOOTER_VX);
 
@@ -115,10 +116,51 @@ int main()
     vector<Bullet> bullets;
 
     XEvent event;
+    string msg_cmd("Cmd: _");
+    Text charPressed(LEFT_MARGIN, BOTTOM_MARGIN, msg_cmd);
+
+    string score("Score :  ");
+    Text score_box(430,BOTTOM_MARGIN, score);
+
+    double sum_time = 0.0, gap = 1.0; //in seconds
+    int timer=0, time_limit = 50; // in seconds
+    bool is_time_over = false, is_health_over = false;
+
+    string time("Time : 00/00");
+    time[time.length()-1]='0'+time_limit%10;
+    time[time.length()-2]='0'+(time_limit/10)%10;
+    Text time_box(LEFT_MARGIN, 10, time);
+
+    int counter_collosion=0 ,limit_collsion=3;
+    string health="Health : 0/0";
+    health[health.length()-1]='0'+limit_collsion;
+    health[health.length()-3]= '0'+counter_collosion;
+    Text health_box(430, 10, health);
+    bool previous_collsion=false;
+
+    int score_value=0;
+
+
+
 
     // Main game loop
     while (true)
     {
+        sum_time=sum_time+ STEP_TIME;
+
+        if (sum_time >= gap)
+        {
+            timer++;
+            time[time.length()-4]='0'+timer%10;
+            time[time.length()-5]='0'+(timer/10)%10;
+            time_box.setMessage(time);
+            if (timer > time_limit)
+            {
+                is_time_over = 1;
+            }
+            sum_time = 0;
+        }
+
         bool pendingEvent = checkEvent(event);
         if (pendingEvent)
         {
@@ -145,19 +187,44 @@ int main()
         move_bullets(bullets);
 
         // Check for collisiona and delete if collided
-        collision_bullet_bubble(bubbles , bullets);
+        score_value = score_value + collision_bullet_bubble(bubbles , bullets);
+        score[score.length()-1]= '0'+score_value; // assuming score_value<10
+        score_box.setMessage(score);
 
         //Game over message
         if (bubbles.size() == 0)
         {
             bullets.clear();
-            print_congratulation();
+            print_banner(1);
             break;
         }
-        bool is_over = collision_bubble_shooter(bubbles ,shooter);
-        if (is_over)
+
+        if (collision_bubble_shooter(bubbles ,shooter))
+        {
+            if(!previous_collsion)
+            {
+                counter_collosion++;
+                health[health.length()-3]= '0'+counter_collosion;
+                health_box.setMessage(health);
+                previous_collsion =true;
+            }
+            if(counter_collosion ==limit_collsion)
+            {
+                is_health_over = true;
+            }
+        }
+        else
+        {
+            previous_collsion=false;
+        }
+
+        if ( is_time_over || is_health_over )
+        {
+            print_banner(2);
             break;
+        }
 
         wait(STEP_TIME);
+
     }
 }
